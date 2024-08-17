@@ -1,86 +1,92 @@
-const { Op } = require('sequelize');
+const { Op } = require("sequelize");
+const {City}= require("../models/index");
 
-const { City } = require('../models/index');
+class CityRepository{
 
-class CityRepository {
+    async createCity(names){
+        try{
 
-    async createCity({ name }) { 
-        try {
-            const city = await City.create({
-                name
-            });
+            const city = await City.bulkCreate(names);
             return city;
-        } catch (error) {
-            console.log("Something went wrong in the repository layer");
-            throw {error};
+
+        }catch(err){
+            console.log("Error in Repository Layer");
+            throw {err};
         }
     }
 
-    async deleteCity(cityId) {
-        try {
+    async deleteCity(id){
+        try{
+
             await City.destroy({
-                where: {
-                    id: cityId
+                where:{
+                    id
                 }
             });
+            
             return true;
-        } catch (error) {
-            console.log("Something went wrong in the repository layer");
-            throw {error};
+        }catch(err){
+            throw {err};
         }
     }
 
-    async updateCity(cityId, data) { // {name: "Prayagraj"}
+    async updateCity(id,data){
         try {
-            // The below approach also works but will not return updated object
-            // if we are using Pg then returning: true can be used, else not
-            // const city = await City.update(data, {
-            //     where: {
-            //         id: cityId
-            //     },
-            //      
+
+            // const result= await City.update(data, {
+            //     where:{
+            //         id:id
+            //     }
             // });
-            // for getting updated data in mysql we use the below approach
-            const city = await City.findByPk(cityId);
-            city.name = data.name;
-            await city.save();
-            return city;
+
+            const result= await City.findByPk(id);
+
+            result.name=data.name;
+            await result.save();
+            return result;
+            
         } catch (error) {
-            console.log("Something went wrong in the repository layer");
+            console.log("Error in Repository Layer");
             throw {error};
+            
         }
     }
 
-    async getCity(cityId) {
-        try {
-            const city = await City.findByPk(cityId);
-            return city;
-        } catch (error) {
-            console.log("Something went wrong in the repository layer");
-            throw {error};
-        }
+    async getCity(id){
+        try{const result= await City.findByPk(id);
+        return result;
+    }catch(error){
+        console.log("Error in Repository Layer");
+        throw {error};
+    }
     }
 
-    async getAllCities(filter) { // filter can be empty also
+    async getAllCity(filter){
         try {
-            if(filter.name) {
-                const cities = await City.findAll({
+
+            if(filter.prefix){
+                const cities= await City.findAll({
                     where: {
-                        name: {
-                            [Op.startsWith]: filter.name
+    
+                        name:{
+                            [Op.startsWith]: filter.prefix
                         }
                     }
                 });
+
                 return cities;
             }
-            const cities = await City.findAll();
+            
+            const cities= await City.findAll();
+
             return cities;
+            
         } catch (error) {
-            console.log("Something went wrong in the repository layer");
+            console.log("Error in Repository Layer");
             throw {error};
+            
         }
     }
-
 }
 
-module.exports = CityRepository;
+module.exports= CityRepository;

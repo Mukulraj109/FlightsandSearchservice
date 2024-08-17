@@ -1,101 +1,114 @@
-const {FlightService} = require('../services/index');
-const { SuccessCodes } = require('../utils/error-codes');
+const {FlightService}=require("../services/index");
 
-const flightService = new FlightService();
+const flightService= new FlightService();
 
-const create = async (req, res) => {
+const create= async(req,res)=>{
     try {
-        const flightRequestData = {
+        
+        const flightDetails={
             flightNumber: req.body.flightNumber,
             airplaneId: req.body.airplaneId,
             departureAirportId: req.body.departureAirportId,
-            arrivalAirportId: req.body.arrivalAirportId,
             arrivalTime: req.body.arrivalTime,
+            arrivalAirportId: req.body.arrivalAirportId,
             departureTime: req.body.departureTime,
             price: req.body.price
         }
-        const flight = await flightService.createFlight(flightRequestData);
-        return res.status(SuccessCodes.CREATED).json({
-            data: flight,
-            success: true,
-            err: {},
-            message: 'Successfully created a flight'
-        })
+        
+        const flight=await flightService.createFlight(req.body);
+        return res.status(201).json({
+            data:flight,
+            success:true,
+            message:"Created new flight",
+            error:{}
+        });
     } catch (error) {
+        console.log("Error in Controller Layer");
         console.log(error);
         return res.status(500).json({
-            data: {},
-            success: false,
-            message: 'Not able to create a flight',
-            err: error
+            data:{},
+            success:false,
+            message:"Unable to create new flight",
+            error: error
         });
+        
     }
+
+    
 }
 
-const getAll = async (req, res) => {
+const get= async(req,res)=>{
     try {
-        console.log(req.query);
-        const response = await flightService.getAllFlightData(req.query);
-        return res.status(SuccessCodes.OK).json({
-            data: response,
-            success: true,
-            err: {},
-            message: 'Successfully fetched the flights'
+
+        const flight= await flightService.getFlight(req.params.id);
+        return res.status(200).json({
+            data:flight,
+            success:true,
+            message:"Fetched flight",
+            error:{}
         });
-    } catch (error) {
+            
+     } catch (error) {
+        console.log("Error in Controller Layer");
         console.log(error);
         return res.status(500).json({
-            data: {},
-            success: false,
-            message: 'Not able to fetch the flights',
-            err: error
+            data:{},
+            success:false,
+            message:"Unable to fetch flight",
+            error: error
         });
     }
 }
 
-const get = async (req, res) => {
+const getAll=async(req,res)=>{
     try {
-        const response = await flightService.getFlight(req.params.id);
-        return res.status(SuccessCodes.OK).json({
-            data: response,
-            success: true,
-            err: {},
-            message: 'Successfully fetched the flight'
+        
+        const flights= await flightService.getAllFlight(req.query);
+        return res.status(200).json({
+            data:flights,
+            success:true,
+            message:"Fetched flight",
+            error:{}
         });
+
     } catch (error) {
+        console.log("Error in Controller Layer");
         console.log(error);
         return res.status(500).json({
-            data: {},
-            success: false,
-            message: 'Not able to fetch the flight',
-            err: error
+            data:{},
+            success:false,
+            message:"Unable to fetch flights",
+            error: error
         });
     }
 }
 
-const update = async (req, res) => {
+const updateFlight=async(req,res)=>{
     try {
-        const response = await flightService.updateFlight(req.params.id, req.body);
-        return res.status(SuccessCodes.OK).json({
-            data: response,
-            success: true,
-            err: {},
-            message: 'Successfully updated the flight'
+        
+        const flight= await flightService.updateFlight(req.params.id, req.body);
+        return res.status(200).json({
+            data:flight,
+            success:true,
+            message:"Updated flight",
+            error:{}
         });
+
     } catch (error) {
+        console.log("Error in Controller Layer");
         console.log(error);
         return res.status(500).json({
-            data: {},
-            success: false,
-            message: 'Not able to update the flight',
-            err: error
+            data:{},
+            success:false,
+            message:"Unable to update flight",
+            error: error
         });
     }
 }
 
-module.exports = {
+module.exports={
     create,
-    getAll,
     get,
-    update
+    getAll,
+    updateFlight
 }

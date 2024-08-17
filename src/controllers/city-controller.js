@@ -1,113 +1,134 @@
-const { CityService } = require('../services/index');
+const { CityService }= require("../services/index");
+const { SuccessCodes }= require("../utils/res-statusCodes");
 
-const cityService = new CityService();
+const cityService= new CityService();
 
-const create = async (req, res) => {
+//POST -> /city
+const create= async(req,res)=>{
     try {
-        const city = await cityService.createCity(req.body);
-        return res.status(201).json({
-            data: city,
-            success: true,
-            message: 'Successfully created a city',
-            err: {}
-        });
-    } catch (error) {
-        console.log(error);
-        return res.status(500).json({
-            data: {},
-            success: false,
-            message: 'Not able to create a city',
-            err: error
-        });
-    }
-}
-// DELETE. -> /city/:id
-const destroy = async (req, res) => {
-    try {
-        const response = await cityService.deleteCity(req.params.id);
-        return res.status(200).json({
+
+        const response=await cityService.createCity(req.body);
+        return res.status(SuccessCodes.CREATED).json({
             data: response,
             success: true,
-            message: 'Successfully deleted a city',
-            err: {}
+            message: "City created Successfully",
+            err:{}
         });
+        
     } catch (error) {
+        console.log("Error in Controller Layer");
         console.log(error);
         return res.status(500).json({
             data: {},
             success: false,
-            message: 'Not able to delete the city',
-            err: error
+            message: "Unable to create City",
+            err:{error}
         });
+        
     }
 }
 
-// GET -> /city/:id
-const get = async (req, res) => {
+//PATCH -> /city/:id
+const update= async(req,res)=>{
     try {
-        const response = await cityService.getCity(req.params.id);
-        return res.status(200).json({
+
+        const response=await cityService.updateCity(req.params.id,req.body);
+        return res.status(SuccessCodes.OK).json({
             data: response,
             success: true,
-            message: 'Successfully fetched a city',
-            err: {}
+            message: "City updated Successfully",
+            err:{}
         });
+        
     } catch (error) {
+        console.log("Error in Controller Layer");
         console.log(error);
         return res.status(500).json({
             data: {},
             success: false,
-            message: 'Not able to get the city',
-            err: error
+            message: "Unable to update City",
+            err:{error}
         });
+        
     }
 }
 
-// Patch -> /city/:id -> req.body
-const update = async (req, res) => {
+//GET -> /city/:id
+const get= async(req,res)=>{
     try {
-        const response = await cityService.updateCity(req.params.id, req.body);
-        return res.status(200).json({
+
+        const response=await cityService.getCity(req.params.id);
+        return res.status(SuccessCodes.OK).json({
             data: response,
             success: true,
-            message: 'Successfully fetched a city',
-            err: {}
+            message: "City fetched Successfully",
+            err:{}
         });
+        
     } catch (error) {
+        console.log("Error in Controller Layer");
         console.log(error);
         return res.status(500).json({
             data: {},
             success: false,
-            message: 'Not able to update the city',
-            err: error
+            message: "Unable to get City",
+            err:{error}
+        });
+        
+    }
+}
+
+//DELETE -> /city/:id
+const destroy= async(req,res)=>{
+    try {
+
+        const response=await cityService.deleteCity(req.params.id);
+        return res.status(SuccessCodes.OK).json({
+            data: response,
+            success: true,
+            message: "City deleted Successfully",
+            err:{}
+        });
+        
+    } catch (error) {
+        console.log("Error in Controller Layer");
+        console.log(error);
+        return res.status(500).json({
+            data: {},
+            success: false,
+            message: "Unable to delete City",
+            err:{error}
         });
     }
 }
 
-const getAll = async (req, res) => {
+const getAll= async(req,res)=>{
     try {
-        const cities = await cityService.getAllCities(req.query);
-        return res.status(200).json({
+        const cities= await cityService.getAllCity(req.query);
+        return res.status(SuccessCodes.OK).json({
             data: cities,
             success: true,
-            message: 'Successfully fetched all cities',
-            err: {}
-        });
+            message: "Cities fetched Successfully",
+            err:{}
+        })
+        
     } catch (error) {
+        console.log("Error in Controller Layer");
         console.log(error);
         return res.status(500).json({
             data: {},
             success: false,
-            message: 'Not able to fetch the cities',
-            err: error
+            message: "Unable to fetch Cities",
+            err:{error}
         });
+        
     }
 }
 
-module.exports = {
+module.exports={
     create,
-    destroy,
-    get,
     update,
+    get,
+    destroy,
     getAll
 }
